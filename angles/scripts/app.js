@@ -1,10 +1,8 @@
-const width = 900;
-const height = 500;
-
 const makeDemo = () => {
 
 	const data = generateGraph(25);
-	const container = prepareContainer();
+	const size = getViewSize();
+	const container = prepareContainer(size);
 	
 	renderGraph(container, data);
 };
@@ -22,15 +20,20 @@ const generateGraph = (nodesCount, probability = 0.1) => {
 	return { nodes, links }
 };
 
-const prepareContainer = () => {
+const getViewSize = () => {
+	const container = d3.select("#root").node();
+	return container.getBoundingClientRect();
+}
+
+const prepareContainer = (size) => {
 
 	const container = d3
 				.select("#root")
 					.append("svg")
-						.attr("width", width)
-						.attr("height", height)
+						.attr("width", size.width)
+						.attr("height", size.height)
 					.append("g")
-						.attr("transform", `translate(${ width / 2}, ${ height / 2 })`);
+						.attr("transform", `translate(${ size.width / 2}, ${ size.height / 2 })`);
 
 	return container;
 };
