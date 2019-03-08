@@ -8,6 +8,7 @@ const makeDemo = () => {
 	const size = getViewSize();
 	const container = prepareContainer(size);
 	
+	runSimulation(data);
 	renderGraph(container, data);
 };
 
@@ -59,8 +60,6 @@ const getRelativeAngle = (d, baseAngle) => {
 }
 
 const renderGraph = (container, data) => {
-	
-	runSimulation(data);
 	
 	//
 	const links = container

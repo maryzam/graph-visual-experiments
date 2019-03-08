@@ -28,6 +28,6 @@ main {
 
 .link {
 	stroke: black;
-	stroke-width: 2px;
+	stroke-width: 1px;
 	opacity: 0.5;
 }

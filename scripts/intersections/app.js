@@ -4,24 +4,14 @@ const scaleAngle = d3.scaleSequential(d3.interpolateBlues).domain([90, 0])
 
 const makeDemo = () => {
 
-	const data = generateGraph(25);
+	const nodeCount = Math.floor(30 + Math.random() * 20);
+
+	const data = generateGraph(nodeCount);
 	const size = getViewSize();
 	const container = prepareContainer(size);
 	
+	runSimulation(data);
 	renderGraph(container, data);
-};
-
-const generateGraph = (nodesCount, probability = 0.1) => {
-	const nodes = d3.range(nodesCount).map(d => ({ id: d}));
-	const links = [];
-	for (let source = 0; source < nodesCount; source++) {
-		for (let target = 0; target < nodesCount; target++) {
-			if (Math.random() < probability) {
-				links.push({ source, target });
-			}
-		}
-	}
-	return { nodes, links }
 };
 
 const getViewSize = () => {
@@ -42,9 +32,25 @@ const prepareContainer = (size) => {
 	return container;
 };
 
+const unifyLinks = (links) => {
+	return () => {
+		links
+			.transition()
+				.duration(300)
+			.style("stroke", "black");
+	}
+}
+
+
+const highlightIntersections = (links) => {
+	return (currentLink) => {
+		links
+			.style("stroke", d => isIntersect(d, currentLink) ? "tomato" : "black")
+			.style("opacity", d => isIntersect(d, currentLink) ? 1 : 0.3);
+	};
+}
+
 const renderGraph = (container, data) => {
-	
-	runSimulation(data);
 	
 	//
 	const links = container
@@ -57,6 +63,10 @@ const renderGraph = (container, data) => {
 						.attr("y1", d => d.source.y)
 						.attr("x2", d => d.target.x)
 						.attr("y2", d => d.target.y);
+
+	links
+		.on("mouseover", highlightIntersections(links))
+		.on("mouseout", unifyLinks(links));
 
 	//
 	const nodes = container
